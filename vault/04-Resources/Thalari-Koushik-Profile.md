@@ -1,6 +1,5 @@
 ---
 created: 2026-04-13
-source: Claude AI export
 ---
 
 # Thalari Koushik (TMK)

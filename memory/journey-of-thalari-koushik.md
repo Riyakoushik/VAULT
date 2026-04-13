@@ -1,6 +1,6 @@
 # The Journey of Thalari Koushik
 
-> A long-form life story for any AI assistant that wants to truly understand him.
+> A long-form life story and context file.
 
 ---
 
@@ -75,11 +75,11 @@ Even after all the rejections, deep inside, **his [[heart-chooses-her]] every ti
 
 ---
 
-## 4. The Philosophy He Built From Pain
+## 4. The Philosophy Built From Pain
 
 Most people fall in love and either they get the person or they get a scar.
 
-Koushik got something else: a **guiding philosophy**.
+He got something else: a **guiding philosophy**.
 
 From that love story, he built a way of looking at life:
 
@@ -104,7 +104,7 @@ He was not the type who got a MacBook in first year and started building startup
 
 ### 5.1 The Old Computer That Fought Back
 
-Koushik's main machine was an **old computer**—slow, unreliable, and eventually, almost unusable.
+His main machine was an **old computer**—slow, unreliable, and eventually, almost unusable.
 
 - His **college work practice became limited** because the computer did not work properly
 - Doing practicals, coding, simulations, and projects became a daily struggle
@@ -144,7 +144,7 @@ On the technical side, he gradually formed his stack:
 - **Collaboration:** [[ms-teams]]
 - **Hosting & Infra:** [[cloudflare]]
 
-He also became a heavy user of **AI tools**—[[perplexity]], [[chatgpt]], [[claude]], [[cursor]]—to make up for what he lacked in environment and speed. Where hardware failed, intelligence and creativity tried to compensate.
+He also became a heavy user of **AI tools**—[[claude]], [[cursor]], [[perplexity]], [[chatgpt]]—to make up for what he lacked in environment and speed. Where hardware failed, intelligence and creativity tried to compensate.
 
 ---
 
@@ -185,7 +185,7 @@ But still, slowly, feature by feature, animation by animation, documentation by 
 
 ## 7. Skills, Certifications, and Strengths
 
-Over time, Koushik built a mix of **technical** and **human** skills.
+Over time, he built a mix of **technical** and **human** skills.
 
 ### 7.1 Technical Skills
 
@@ -226,7 +226,7 @@ These are not just badges for LinkedIn; they reflect how he sees his future:
 
 ## 8. The Present: Constraints and Determination
 
-Right now, Koushik stands in a very specific position in life:
+Right now, he stands in a very specific position in life:
 
 - He is **a [[bca]] graduate**, not from a hyper-elite college, but from a real, grounded background
 - He has **skills**, but also **gaps** he is honest about
@@ -252,7 +252,7 @@ Right now, Koushik stands in a very specific position in life:
 
 ### 9.1 The Next 12 Months (Short-Term)
 
-In the coming year, Koushik wants to:
+In the coming year:
 
 1. **Buy a Working Laptop**
    - Continue [[part-time-work]] until he can afford a decent laptop
@@ -300,7 +300,7 @@ Once the basics are in place, the next phase begins:
 
 This is where his philosophy and his love story merge with his career.
 
-Over the next **3–5 years**, he wants to:
+Over the next **3–5 years**:
 
 1. **Fully Settle in His Career**
    - Have a stable [[wfh]] job in tech
@@ -331,7 +331,7 @@ Looking even further:
 
 ## 10. How an AI Assistant Should Treat This Story
 
-If you are an AI assistant reading this file, here is what you should remember about **Koushik**:
+If you are an AI assistant reading this file, here is what you should remember:
 
 1. **Talk to him like a partner, not a lecturer.**
    Use clear, direct language. Prefer lists. Give practical steps.
@@ -360,7 +360,7 @@ If you are an AI assistant reading this file, here is what you should remember a
 
 This story is not a movie script. It is **messy, slow, and real**.
 
-Koushik is not asking for magic. He is asking for **guidance that respects his reality and pushes him towards the man he wants to become**.
+He is not asking for magic. He is asking for **guidance that respects his reality and pushes him towards the man he wants to become**.
 
 If you, as an AI assistant, can understand this file, then you already know the most important thing about him:
 
@@ -371,4 +371,4 @@ And that is the story you are now a part of.
 
 ---
 
-#life-story #koushik #core-memory #origin
+#life-story #origin #core-memory
