@@ -20,6 +20,8 @@ Welcome to your Obsidian vault.
 
 - Today's note: [[{{date:YYYY-MM-DD}}]]
 - This week: [[{{date:YYYY-MM-DD}}|{{date:gggg-[W]WW}}]]
+- [[Thalari-Koushik-Profile|👤 My Profile]]
+- [[journey-of-thalari-koushik|📖 Life Story]] (in memory/)
 
 ## ✅ Daily Checklist
 

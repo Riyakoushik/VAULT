@@ -80,5 +80,9 @@ source: Claude AI export
 - Entry-level PM / Product Analyst
 - Currently: Zorvyn FinTech (screening done), Match That Role
 
----
-*Imported from Claude AI - 2026-04-13*
+## 📚 Related
+
+- [[journey-of-thalari-koushik|📖 Full Life Story]] - Origins, love story, philosophy
+- [[MEMORY|🧠 Memory Hub]] - Core identity and constraints
+- [[love-story|💔 The Love Story]] - 4 proposals and the promise
+- [[3-5-year-plan|🎯 3-5 Year Plan]] - Roadmap to stability
