@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMK Memory Graph</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 50%, #0d0d0d 100%);
+            font-family: 'Inter', -apple-system, sans-serif;
+            overflow: hidden;
+            color: #e0e0e0;
+        }
+        
+        #graph-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .node:hover {
+            filter: brightness(1.3);
+        }
+        
+        .node-circle {
+            stroke-width: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .node-label {
+            font-size: 11px;
+            fill: #e0e0e0;
+            text-anchor: middle;
+            pointer-events: none;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        
+        .link {
+            stroke-opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+        
+        .link:hover {
+            stroke-opacity: 1;
+            stroke-width: 3px;
+        }
+        
+        .cluster-label {
+            font-size: 14px;
+            fill: #888;
+            text-anchor: middle;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        #info-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        
+        #info-panel.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        #info-panel h3 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border-bottom: 2px solid;
+            padding-bottom: 8px;
+        }
+        
+        #info-panel p {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #ccc;
+        }
+        
+        #info-panel .connections {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        #info-panel .connections span {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 11px;
+            margin: 3px;
+            color: #aaa;
+        }
+        
+        .legend {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            z-index: 1000;
+        }
+        
+        .legend h4 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 11px;
+            color: #aaa;
+        }
+        
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+        }
+        
+        .controls button {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .controls button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div id="graph-container"></div>
+    
+    <div class="controls">
+        <button onclick="resetZoom()">Reset View</button>
+        <button onclick="togglePhysics()">Toggle Physics</button>
+    </div>
+    
+    <div id="info-panel">
+        <h3 id="node-title">Select a node</h3>
+        <p id="node-desc">Click on any node to see details and connections</p>
+        <div class="connections" id="node-connections"></div>
+    </div>
+    
+    <div class="legend">
+        <h4>Node Types</h4>
+        <div class="legend-item"><div class="legend-dot" style="background: #ff6b6b;"></div>Identity / Core</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #4ecdc4;"></div>Projects</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #ffd93d;"></div>Skills / Tools</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #a8e6cf;"></div>Goals / Future</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #ff8b94;"></div>Emotional / Motivation</div>
+        <div class="legend-item"><div class="legend-dot" style="background: #c7ceea;"></div>Constraints</div>
+    </div>
+
+    <script>
+        const data = {
+            nodes: [
+                // Core Identity
+                { id: "thalarik-koushik", label: "TMK", group: "core", size: 30, desc: "Core identity - Thalari Koushik, 20 years old, building from Allagadda" },
+                { id: "allagadda", label: "Allagadda", group: "core", size: 20, desc: "Origin - small town in Andhra Pradesh, not a tech hub" },
+                { id: "bca", label: "BCA", group: "core", size: 18, desc: "Bachelor of Computer Applications, Bengaluru North University" },
+                
+                // Emotional Core
+                { id: "love-story", label: "Love Story", group: "emotion", size: 28, desc: "4 proposals over 3 years, all rejected. The emotional engine." },
+                { id: "man-needs-success", label: "Success → Trust", group: "emotion", size: 25, desc: "Core belief: 'A man needs to be successful for a girl to trust'" },
+                { id: "heart-chooses-her", label: "Heart Chooses", group: "emotion", size: 20, desc: "Despite rejections, heart still chooses her every time" },
+                { id: "respect", label: "Respect", group: "emotion", size: 18, desc: "Never distracted her from education. Waited." },
+                
+                // Plan & Action
+                { id: "3-5-year-plan", label: "3-5 Year Plan", group: "goal", size: 26, desc: "Timeline to stability, success, and becoming worthy" },
+                { id: "part-time-work", label: "Part-time Work", group: "constraint", size: 22, desc: "Working daily in hot environment to save money" },
+                { id: "laptop", label: "Laptop", group: "constraint", size: 24, desc: "No working computer. Saving to buy one. Blocks everything." },
+                
+                // Projects
+                { id: "portfolio-first", label: "Portfolio First", group: "project", size: 25, desc: "Strategy: artifacts over resume, proof over credentials" },
+                { id: "thalarikoushik-in", label: "thalarikoushik.in", group: "project", size: 23, desc: "Portfolio website - Next.js 15, Cloudflare, glassmorphism" },
+                { id: "emet-ai", label: "Emet AI", group: "project", size: 21, desc: "Angular 18 chat interface with prompt enhancer" },
+                { id: "edith", label: "Edith", group: "project", size: 20, desc: "Offline Android music player - PRD done, code TODO" },
+                { id: "job-hunter-pro", label: "Job Hunter Pro", group: "project", size: 19, desc: "Job aggregation tool - React 19, Cloudflare D1" },
+                { id: "riya", label: "Riya", group: "project", size: 17, desc: "Local LLM (~1M params) - early stages" },
+                { id: "research-agents", label: "Research Agents", group: "project", size: 16, desc: "Product validation + competitor analysis - early" },
+                
+                // Tech Stack
+                { id: "nextjs", label: "Next.js", group: "tech", size: 19, desc: "React framework with SSR, App Router" },
+                { id: "react", label: "React", group: "tech", size: 18, desc: "Frontend library" },
+                { id: "angular", label: "Angular", group: "tech", size: 17, desc: "TypeScript framework for Emet AI" },
+                { id: "tailwind", label: "Tailwind", group: "tech", size: 18, desc: "Utility-first CSS framework" },
+                { id: "cloudflare", label: "Cloudflare", group: "tech", size: 22, desc: "Free tier infrastructure - Pages, Workers, D1, KV, R2" },
+                { id: "cursor-ai", label: "Cursor AI", group: "tech", size: 19, desc: "Primary code generation tool" },
+                { id: "claude", label: "Claude", group: "tech", size: 17, desc: "Strategic thinking, long-form reasoning" },
+                
+                // Communication
+                { id: "caveman-max", label: "caveman-max", group: "tech", size: 18, desc: "Token compression ~80%, maximum efficiency" },
+                { id: "humanizer", label: "humanizer", group: "tech", size: 17, desc: "Strip AI writing patterns, sound human" },
+                { id: "blunt-tone", label: "Blunt Tone", group: "tech", size: 16, desc: "One line default, detail when asked" },
+                
+                // Career
+                { id: "product-manager", label: "Product Manager", group: "goal", size: 22, desc: "Target role - entry level" },
+                { id: "product-analyst", label: "Product Analyst", group: "goal", size: 21, desc: "Alternative target role" },
+                { id: "wfh", label: "WFH", group: "goal", size: 20, desc: "Work from home, flexible schedule IST" },
+                { id: "entry-level", label: "Entry Level", group: "goal", size: 19, desc: "No formal PM experience yet" },
+                
+                // Skills Learning
+                { id: "sql", label: "SQL", group: "skill", size: 17, desc: "Learning for data literacy - basic level now" },
+                { id: "jira", label: "Jira", group: "skill", size: 16, desc: "Learning for project management systems" },
+                { id: "prd-writing", label: "PRD Writing", group: "skill", size: 18, desc: "Product requirement documents - self-taught" },
+                
+                // Constraints
+                { id: "budget", label: "Budget", group: "constraint", size: 20, desc: "Budget-conscious, free tier only" },
+                { id: "location", label: "Location", group: "constraint", size: 18, desc: "Allagadda - not tech hub, building remotely" },
+                { id: "health", label: "Health", group: "constraint", size: 17, desc: "Post-accident recovery, mostly indoors" },
+                
+                // Values
+                { id: "patience", label: "Patience", group: "value", size: 18, desc: "3 years of waiting, proposing, respecting" },
+                { id: "consistency", label: "Consistency", group: "value", size: 18, desc: "Showing up daily, building steadily" },
+                { id: "loyalty", label: "Loyalty", group: "value", size: 17, desc: "Once trust earned, loyalty is absolute" },
+                { id: "self-reliance", label: "Self-reliance", group: "value", size: 19, desc: "Figure it out or get left behind" },
+                
+                // Future
+                { id: "financial-stability", label: "Financial Stability", group: "goal", size: 23, desc: "3-5 year goal - foundation for family" },
+                { id: "family", label: "Family", group: "goal", size: 22, desc: "Ultimate goal - provide, protect, settle" },
+                { id: "worthiness", label: "Worthiness", group: "goal", size: 21, desc: "Become someone who can be trusted" }
+            ],
+            links: [
+                // Identity chain
+                { source: "thalarik-koushik", target: "allagadda", strength: 5 },
+                { source: "thalarik-koushik", target: "bca", strength: 4 },
+                { source: "thalarik-koushik", target: "portfolio-first", strength: 5 },
+                
+                // Love story chain
+                { source: "thalarik-koushik", target: "love-story", strength: 6 },
+                { source: "love-story", target: "man-needs-success", strength: 8 },
+                { source: "love-story", target: "respect", strength: 5 },
+                { source: "love-story", target: "heart-chooses-her", strength: 6 },
+                { source: "man-needs-success", target: "3-5-year-plan", strength: 9 },
+                
+                // Action chain
+                { source: "3-5-year-plan", target: "part-time-work", strength: 7 },
+                { source: "part-time-work", target: "laptop", strength: 6 },
+                { source: "laptop", target: "portfolio-first", strength: 5 },
+                
+                // Projects
+                { source: "portfolio-first", target: "thalarikoushik-in", strength: 6 },
+                { source: "portfolio-first", target: "emet-ai", strength: 5 },
+                { source: "portfolio-first", target: "edith", strength: 4 },
+                { source: "portfolio-first", target: "job-hunter-pro", strength: 4 },
+                { source: "portfolio-first", target: "riya", strength: 3 },
+                { source: "portfolio-first", target: "research-agents", strength: 3 },
+                
+                // Tech connections
+                { source: "thalarikoushik-in", target: "nextjs", strength: 6 },
+                { source: "thalarikoushik-in", target: "tailwind", strength: 5 },
+                { source: "thalarikoushik-in", target: "cloudflare", strength: 6 },
+                { source: "emet-ai", target: "angular", strength: 5 },
+                { source: "emet-ai", target: "tailwind", strength: 4 },
+                { source: "emet-ai", target: "cloudflare", strength: 5 },
+                { source: "job-hunter-pro", target: "react", strength: 5 },
+                { source: "job-hunter-pro", target: "cloudflare", strength: 5 },
+                { source: "nextjs", target: "react", strength: 4 },
+                
+                // Communication
+                { source: "thalarik-koushik", target: "caveman-max", strength: 5 },
+                { source: "caveman-max", target: "humanizer", strength: 6 },
+                { source: "caveman-max", target: "blunt-tone", strength: 5 },
+                { source: "thalarik-koushik", target: "cursor-ai", strength: 5 },
+                { source: "thalarik-koushik", target: "claude", strength: 4 },
+                { source: "cursor-ai", target: "claude", strength: 3 },
+                
+                // Career
+                { source: "3-5-year-plan", target: "product-manager", strength: 6 },
+                { source: "3-5-year-plan", target: "product-analyst", strength: 5 },
+                { source: "portfolio-first", target: "entry-level", strength: 5 },
+                { source: "entry-level", target: "product-manager", strength: 4 },
+                { source: "product-manager", target: "wfh", strength: 5 },
+                { source: "product-analyst", target: "wfh", strength: 4 },
+                
+                // Skills
+                { source: "thalarik-koushik", target: "sql", strength: 3 },
+                { source: "thalarik-koushik", target: "jira", strength: 3 },
+                { source: "thalarik-koushik", target: "prd-writing", strength: 5 },
+                { source: "prd-writing", target: "edith", strength: 4 },
+                
+                // Constraints
+                { source: "thalarik-koushik", target: "budget", strength: 5 },
+                { source: "thalarik-koushik", target: "location", strength: 4 },
+                { source: "thalarik-koushik", target: "health", strength: 3 },
+                { source: "budget", target: "cloudflare", strength: 6 },
+                { source: "budget", target: "part-time-work", strength: 5 },
+                { source: "location", target: "wfh", strength: 5 },
+                
+                // Values
+                { source: "thalarik-koushik", target: "patience", strength: 6 },
+                { source: "thalarik-koushik", target: "consistency", strength: 5 },
+                { source: "thalarik-koushik", target: "loyalty", strength: 4 },
+                { source: "thalarik-koushik", target: "self-reliance", strength: 6 },
+                { source: "patience", target: "love-story", strength: 5 },
+                { source: "consistency", target: "3-5-year-plan", strength: 5 },
+                { source: "self-reliance", target: "portfolio-first", strength: 4 },
+                
+                // Future
+                { source: "3-5-year-plan", target: "financial-stability", strength: 7 },
+                { source: "financial-stability", target: "family", strength: 6 },
+                { source: "man-needs-success", target: "worthiness", strength: 7 },
+                { source: "worthiness", target: "family", strength: 5 },
+                { source: "product-manager", target: "financial-stability", strength: 5 },
+                
+                // Blocker relationships (dashed conceptually)
+                { source: "laptop", target: "thalarikoushik-in", strength: 2 },
+                { source: "laptop", target: "edith", strength: 2 },
+                { source: "health", target: "wfh", strength: 3 }
+            ]
+        };
+
+        const groups = {
+            core: { color: "#ff6b6b", label: "Core" },
+            emotion: { color: "#ff8b94", label: "Emotion" },
+            project: { color: "#4ecdc4", label: "Project" },
+            tech: { color: "#ffd93d", label: "Tech" },
+            goal: { color: "#a8e6cf", label: "Goal" },
+            constraint: { color: "#c7ceea", label: "Constraint" },
+            skill: { color: "#ffd3b6", label: "Skill" },
+            value: { color: "#dcedc1", label: "Value" }
+        };
+
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#graph-container")
+            .append("svg")
+            .attr("viewBox", [0, 0, width, height]);
+
+        // Add zoom behavior
+        const g = svg.append("g");
+        
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+        
+        svg.call(zoom);
+
+        // Force simulation
+        const simulation = d3.forceSimulation(data.nodes)
+            .force("link", d3.forceLink(data.links).id(d => d.id).strength(d => d.strength * 0.02))
+            .force("charge", d3.forceManyBody().strength(-300))
+            .force("center", d3.forceCenter(width / 2, height / 2))
+            .force("collision", d3.forceCollide().radius(d => d.size + 10))
+            .force("x", d3.forceX(width / 2).strength(0.05))
+            .force("y", d3.forceY(height / 2).strength(0.05));
+
+        // Draw links
+        const link = g.append("g")
+            .selectAll("line")
+            .data(data.links)
+            .join("line")
+            .attr("class", "link")
+            .attr("stroke", d => {
+                const sourceNode = data.nodes.find(n => n.id === d.source.id || n.id === d.source);
+                const targetNode = data.nodes.find(n => n.id === d.target.id || n.id === d.target);
+                return groups[sourceNode?.group]?.color || "#999";
+            })
+            .attr("stroke-width", d => Math.sqrt(d.strength) * 1.5)
+            .attr("opacity", d => d.strength * 0.1);
+
+        // Draw nodes
+        const node = g.append("g")
+            .selectAll("g")
+            .data(data.nodes)
+            .join("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        node.append("circle")
+            .attr("class", "node-circle")
+            .attr("r", d => d.size)
+            .attr("fill", d => groups[d.group].color)
+            .attr("stroke", d => d3.rgb(groups[d.group].color).darker(0.5))
+            .attr("stroke-width", 2)
+            .style("filter", "drop-shadow(0 2px 4px rgba(0,0,0,0.3))");
+
+        node.append("text")
+            .attr("class", "node-label")
+            .attr("dy", d => d.size + 15)
+            .text(d => d.label)
+            .style("font-size", d => Math.max(10, d.size / 2) + "px");
+
+        // Click handler
+        node.on("click", (event, d) => {
+            event.stopPropagation();
+            showNodeInfo(d);
+        });
+
+        // Update positions
+        simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+        });
+
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        function showNodeInfo(d) {
+            const panel = document.getElementById("info-panel");
+            const title = document.getElementById("node-title");
+            const desc = document.getElementById("node-desc");
+            const connections = document.getElementById("node-connections");
+            
+            title.textContent = d.label;
+            title.style.borderColor = groups[d.group].color;
+            desc.textContent = d.desc;
+            
+            // Find connected nodes
+            const connected = data.links
+                .filter(l => l.source.id === d.id || l.target.id === d.id)
+                .map(l => {
+                    const other = l.source.id === d.id ? l.target : l.source;
+                    return other.label;
+                });
+            
+            connections.innerHTML = connected.length > 0 
+                ? "<strong>Connected to:</strong><br>" + connected.map(c => `<span>${c}</span>`).join("")
+                : "<strong>No direct connections</strong>";
+            
+            panel.classList.add("active");
+        }
+
+        // Click outside to close
+        svg.on("click", () => {
+            document.getElementById("info-panel").classList.remove("active");
+        });
+
+        // Control functions
+        function resetZoom() {
+            svg.transition().duration(750).call(
+                zoom.transform,
+                d3.zoomIdentity
+            );
+        }
+
+        let physicsEnabled = true;
+        function togglePhysics() {
+            physicsEnabled = !physicsEnabled;
+            if (physicsEnabled) {
+                simulation.restart();
+            } else {
+                simulation.stop();
+            }
+        }
+
+        // Initial zoom to fit
+        setTimeout(() => {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const midX = bounds.x + bounds.width / 2;
+            const midY = bounds.y + bounds.height / 2;
+            const scale = 0.9 / Math.max(bounds.width / fullWidth, bounds.height / fullHeight);
+            
+            svg.call(
+                zoom.transform,
+                d3.zoomIdentity
+                    .translate(fullWidth / 2, fullHeight / 2)
+                    .scale(scale)
+                    .translate(-midX, -midY)
+            );
+        }, 500);
+    </script>
+</body>
+</html>
