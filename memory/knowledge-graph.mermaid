@@ -1,0 +1,62 @@
+graph TD
+    %% Core Identity
+    A[thalarik-koushik] --> B[allagadda]
+    A --> C[bca]
+    A --> D[love-story]
+    
+    %% Love Story Chain
+    D --> E[man-needs-success]
+    E --> F[3-5-year-plan]
+    
+    %% Constraints
+    F --> G[part-time-work]
+    G --> H[hot-environment]
+    G --> I[laptop-saving]
+    
+    %% Projects
+    A --> J[portfolio-first]
+    J --> K[thalarikoushik-in]
+    J --> L[emet-ai]
+    J --> M[edith]
+    J --> N[job-hunter-pro]
+    
+    %% Tech Stack
+    K --> O[nextjs]
+    K --> P[tailwind-css]
+    L --> Q[angular]
+    L --> R[glassmorphism]
+    
+    %% Infrastructure
+    O --> S[cloudflare-pages]
+    P --> S
+    Q --> S
+    
+    %% Career Path
+    F --> T[entry-level-pm]
+    T --> U[associate-pm]
+    U --> V[financial-stability]
+    V --> W[family-goals]
+    
+    %% Communication
+    A --> X[caveman-max]
+    A --> Y[humanizer]
+    X --> Z[blunt-tone]
+    
+    %% Links between projects and constraints
+    I -.blocks.-> K
+    S -.enables.-> K
+    
+    %% Emotional core
+    D -.drives.-> F
+    F -.requires.-> G
+    G -.funds.-> I
+    I -.enables.-> K
+    K -.proves.-> T
+    T -.achieves.-> V
+    V -.validates.-> E
+    
+    style D fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px
+    style E fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px
+    style F fill:#4ecdc4,stroke:#087f5b,stroke-width:3px
+    style A fill:#ffd93d,stroke:#f76707,stroke-width:3px
+    style V fill:#6bcf7f,stroke:#2f9e44,stroke-width:3px
