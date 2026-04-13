@@ -1,0 +1,47 @@
+#!/bin/bash
+# Create a new project note
+# Usage: new-project "Project Name"
+
+VAULT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+PROJECTS_DIR="$VAULT_DIR/02-Projects"
+DATE=$(date +"%Y-%m-%d")
+
+if [ -z "$1" ]; then
+    echo "Usage: new-project \"Project Name\""
+    exit 1
+fi
+
+PROJECT_NAME="$1"
+SLUG=$(echo "$PROJECT_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+NOTE_FILE="$PROJECTS_DIR/$SLUG.md"
+
+if [ -f "$NOTE_FILE" ]; then
+    echo "Project already exists: $NOTE_FILE"
+else
+    cat > "$NOTE_FILE" << EOF
+---
+created: $(date +"%Y-%m-%d %H:%M")
+status: active
+priority: 
+due: 
+---
+
+# $PROJECT_NAME
+
+## 🎯 Goal
+
+## 📋 Tasks
+- [ ] 
+
+## 📝 Notes
+
+## 🔗 Related
+- 
+
+## 📌 Resources
+- 
+EOF
+    echo "Created: $NOTE_FILE"
+fi
+
+${EDITOR:-nano} "$NOTE_FILE"

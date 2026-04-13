@@ -1,0 +1,18 @@
+#!/bin/bash
+# Sync vault with GitHub
+
+VAULT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$VAULT_DIR"
+
+# Pull first
+git pull origin main
+
+# Check for changes
+if [ -n "$(git status --porcelain)" ]; then
+    git add .
+    git commit -m "Sync: $(date '+%Y-%m-%d %H:%M')"
+    git push origin main
+    echo "✅ Synced to GitHub"
+else
+    echo "✅ Already up to date"
+fi

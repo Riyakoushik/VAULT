@@ -1,0 +1,29 @@
+#!/bin/bash
+# Quick capture script for Obsidian vault
+# Usage: capture "your note" or capture (opens $EDITOR)
+
+VAULT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+INBOX="$VAULT_DIR/00-Inbox"
+DATE=$(date +"%Y%m%d_%H%M%S")
+
+# Create note from argument or open editor
+if [ -z "$1" ]; then
+    # Interactive mode - open editor
+    NOTE_FILE="$INBOX/capture_$DATE.md"
+    ${EDITOR:-nano} "$NOTE_FILE"
+else
+    # Quick capture from command line
+    NOTE_FILE="$INBOX/capture_$DATE.md"
+    echo "# Quick Capture - $(date '+%Y-%m-%d %H:%M')" > "$NOTE_FILE"
+    echo "" >> "$NOTE_FILE"
+    echo "$@" >> "$NOTE_FILE"
+    echo "Captured to: capture_$DATE.md"
+fi
+
+# Auto-commit if git is set up
+cd "$VAULT_DIR"
+if [ -d .git ] && git diff --quiet HEAD -- "00-Inbox/" 2>/dev/null; then
+    git add "$INBOX/"
+    git commit -m "Quick capture: $(date '+%Y-%m-%d %H:%M')" --quiet
+    git push origin main --quiet 2>/dev/null &
+fi

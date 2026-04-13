@@ -1,0 +1,44 @@
+#!/bin/bash
+# Open or create today's daily note
+
+VAULT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+DAILY_DIR="$VAULT_DIR/01-Daily"
+DATE=$(date +"%Y-%m-%d")
+DAY_NAME=$(date +"%A")
+WEEK=$(date +"%V")
+NOTE_FILE="$DAILY_DIR/$DATE.md"
+
+if [ ! -f "$NOTE_FILE" ]; then
+    # Create from template
+    cat > "$NOTE_FILE" << EOF
+---
+date: $DATE
+day: $DAY_NAME
+week: $WEEK
+mood: 
+energy: 
+---
+
+# $DATE - $DAY_NAME
+
+## 🌅 Morning
+- 
+
+## 📝 Log
+- 
+
+## 💭 Thoughts
+- 
+
+## 🔗 Connected
+- 
+
+## ✅ Tasks
+- [ ] 
+
+## 🌙 Evening
+- 
+EOF
+fi
+
+${EDITOR:-nano} "$NOTE_FILE"

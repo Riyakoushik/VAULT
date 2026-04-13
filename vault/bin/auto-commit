@@ -1,0 +1,12 @@
+#!/bin/bash
+# Auto-commit changes to GitHub
+
+VAULT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$VAULT_DIR" || exit 1
+
+# Only commit if there are changes
+if [ -n "$(git status --porcelain)" ]; then
+    git add .
+    git commit -m "Auto-commit: $(date '+%Y-%m-%d %H:%M')"
+    git push origin main --quiet 2>/dev/null
+fi
