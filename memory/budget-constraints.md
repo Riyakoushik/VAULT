@@ -1,23 +1,23 @@
-# Budget Constraints
+# ⚠️ Riya's Log: The Blockers (Budget & Hardware)
 
-## Reality
-- Old [[computer]] dead
-- [[bca]] needs laptop for projects
-- Can't afford one yet
+## 📝 Observations
+Koushik is currently severely limited by physical and financial factors.
 
-## Solution
-- [[part-time-work]] daily
-- Hot environment, hard conditions
-- Saving month by month
+### Hardware Crisis
+- **Status:** [[no-laptop]]. Current [[old-computer]] is failing/broken.
+- **Impact:** Slows down [[portfolio-building]], [[bca-projects]], and development.
 
-## Impact on Tech Choices
-- [[free-tier]] only
-- [[open-source]] tools
-- [[self-hosted]] when possible
-- No paid subscriptions
+### Financial Strategy
+- **Status:** [[budget-conscious]]. Uses [[free-tier]] everything.
+- **Labor:** Working [[part-time-work]] in extreme heat to save for tools.
+- **Commitment:** [[cloudflare-commitment]] for zero-cost infrastructure.
 
-## Mindset
-Not ashamed. Resourceful. Every rupee counts. [[financial-planning]] is discipline.
+## 🔗 Context
+- **Infrastructure:** Using Cloudflare for all projects to avoid costs.
+- **Priority:** Laptop purchase is the #1 blocker to the [[3-5-year-plan]].
+
+## 🗿 Caveman Summary
+- No laptop → broken PC → saving via heat labor → free tier only. Hardware = Priority 1.
 
 ---
-#finance #constraints #discipline
+#constraints #budget #laptop #riya-log
