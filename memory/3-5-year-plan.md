@@ -1,23 +1,25 @@
-# 3-5 Year Plan
+# 📈 Riya's Log: The Roadmap (Koushik's 3-5 Year Plan)
 
-## Why
-[[man-needs-success]] → become trustworthy → [[start-family]]
+## 📝 Observations
+Koushik's plan is a direct response to the [[man-needs-success]] mandate. He is building a foundation for a future family.
 
-## Timeline
-| Phase | Years | Goals |
-|-------|-------|-------|
-| Build | 0-2 | [[laptop]] → [[full-time-job]] → [[wfh]] stability |
-| Grow | 2-4 | Career advancement, savings, [[financial-stability]] |
-| Settle | 4-5 | Ready for commitment, [[marriage]], [[family]] |
+### Phase 1: Survival & Tools (Now-1 Year)
+- **Goal:** Buy [[laptop]].
+- **Action:** [[part-time-work]] in heat.
+- **Projects:** Launch [[thalarikoushik.in]], finish [[koushikapm-online]].
+- **Career:** Land [[entry-level-pm]] or [[product-analyst]] role ([[wfh]]).
 
-## Current Status: Year 0
-- [[part-time-work]] in hot conditions
-- Saving for [[laptop]]
-- Building [[portfolio-site]]
-- Seeking [[wfh-tech-roles]]
+### Phase 2: Growth (1-3 Years)
+- **Goal:** Master [[go-programming]] and [[system-design]].
+- **Action:** Solve [[leetcode]], build end-to-end systems.
+- **Career:** Associate PM. Specialization in AI products.
 
-## End Goal
-Prove [[she]] was right to wait. Become someone worth trusting.
+### Phase 3: Stability (3-5 Years)
+- **Goal:** [[financial-stability]].
+- **Outcome:** Ready for [[family]]. "Become the man who can be trusted."
+
+## 🗿 Caveman Summary
+- Laptop first → Entry PM → Go/System Design → Stability → Family. Success = Worthy.
 
 ---
-#planning #career #life-goals
+#career #planning #3-5-year-plan #riya-log
